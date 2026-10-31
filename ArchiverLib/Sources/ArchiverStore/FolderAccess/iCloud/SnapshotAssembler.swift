@@ -8,37 +8,48 @@
 import ArchiverModels
 import Foundation
 
-/// Folds `NSMetadataQuery`'s initial result set and its later updates into full folder snapshots.
+/// Folds `NSMetadataQuery`'s events, in the order the query's queue posted them, into Folder Snapshots.
 ///
-/// Nothing leaves before the initial result set: an update that arrives earlier describes only the
+/// Nothing leaves before the Initial Snapshot: an update that arrives earlier describes only the
 /// changed items, and a snapshot built from it would make every other document look deleted.
 struct SnapshotAssembler {
-    private var currentDocuments: [Int: DocumentInformation] = [:]
-    /// `nil` until the initial snapshot went out.
-    private var lastSent: [DocumentInformation]?
+    /// One notification of the query, already read on the query's queue: `NSMetadataItem` is not
+    /// `Sendable` and must not travel to the consumer.
+    enum Event: Sendable {
+        case initialSnapshot([DocumentInformation])
+        case update(added: [DocumentInformation], updated: [DocumentInformation], removed: [URL])
 
-    /// Replaces everything with the complete result set and returns it as the first snapshot.
-    mutating func applyInitial(_ results: [DocumentInformation]) -> [DocumentInformation] {
-        currentDocuments = Dictionary(results.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
-        let documents = Array(currentDocuments.values)
-        lastSent = documents
-        return documents
+        /// The event's name in the log.
+        var name: String {
+            switch self {
+            case .initialSnapshot: "initial"
+            case .update: "update"
+            }
+        }
     }
 
-    /// Merges an update; returns a snapshot only once the initial one went out and only if it
-    /// differs from the last one sent.
-    mutating func applyUpdate(added: [DocumentInformation],
-                              updated: [DocumentInformation],
-                              removed: [URL]) -> [DocumentInformation]? {
-        for change in added + updated {
-            currentDocuments[change.id] = change
+    private var currentDocuments: [Int: DocumentInformation] = [:]
+    /// `nil` until the Initial Snapshot went out.
+    private var lastSent: [DocumentInformation]?
+
+    /// Returns the Folder Snapshot to send for `event`, or `nil` when there is nothing new to send.
+    mutating func apply(_ event: Event) -> [DocumentInformation]? {
+        switch event {
+        case .initialSnapshot(let results):
+            currentDocuments = Dictionary(results.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
+
+        case let .update(added, updated, removed):
+            for change in added + updated {
+                currentDocuments[change.id] = change
+            }
+            let removed = Set(removed)
+            currentDocuments = currentDocuments.filter { !removed.contains($0.value.url) }
+            guard lastSent != nil else { return nil }
         }
-        let removed = Set(removed)
-        currentDocuments = currentDocuments.filter { !removed.contains($0.value.url) }
-        guard let lastSent else { return nil }
+
         let documents = Array(currentDocuments.values)
-        guard lastSent.sorted() != documents.sorted() else { return nil }
-        self.lastSent = documents
+        guard lastSent?.sorted() != documents.sorted() else { return nil }
+        lastSent = documents
         return documents
     }
 }

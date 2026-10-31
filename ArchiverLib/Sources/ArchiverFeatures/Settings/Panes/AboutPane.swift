@@ -28,12 +28,12 @@ struct AboutPane: View {
 
             Section {
                 Button {
-                    store.send(.onContactSupportTapped)
+                    store.send(.diagnosticsReportFlow(.start()))
                 } label: {
                     HStack {
                         Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
                         Spacer()
-                        if store.isCreatingDiagnosticsReport {
+                        if store.diagnosticsReportFlow.isCreatingReport {
                             ProgressView()
                                 .controlSize(.small)
                         }
@@ -42,12 +42,7 @@ struct AboutPane: View {
                 }
                 .buttonStyle(.plain)
                 .focusable(false)
-                .diagnosticsReportConsentDialog(
-                    isPresented: $store.isShowingDiagnosticsReportConsent,
-                    onSendWithReport: { store.send(.onSendWithReportTapped) },
-                    onSendWithoutReport: { store.send(.onSendWithoutReportTapped) },
-                    onCancel: { store.send(.onCancelContactSupportTapped) }
-                )
+                .diagnosticsReportFlow(store: store.scope(\.diagnosticsReportFlow, action: \.diagnosticsReportFlow))
 
                 Button {
                     requestReview()

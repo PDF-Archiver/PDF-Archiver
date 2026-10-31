@@ -14,45 +14,61 @@ import Testing
 @Suite
 struct SnapshotAssemblerTests {
     @Test
-    func anUpdateBeforeTheInitialSnapshotIsHeldBack() {
+    func nothingIsSentBeforeTheInitialSnapshotAndItsResultsReplaceEarlierUpdates() {
+        // The serial queue reads the Initial Snapshot after the update, so its results already hold that change.
+        let earlierUpdate = Self.item(id: 3, downloadStatus: 0.5)
+        let initialSnapshot = [Self.item(id: 1), Self.item(id: 3, downloadStatus: 1)]
         var assembler = SnapshotAssembler()
 
-        let early = assembler.applyUpdate(added: [], updated: [Self.item(id: 1)], removed: [])
-        let initial = assembler.applyInitial([Self.item(id: 1), Self.item(id: 2), Self.item(id: 3)])
-
-        #expect(early == nil)
-        #expect(initial.map(\.id).sorted() == [1, 2, 3])
+        #expect(assembler.apply(.update(added: [], updated: [earlierUpdate], removed: [])) == nil)
+        #expect(assembler.apply(.initialSnapshot(initialSnapshot))?.sorted() == initialSnapshot.sorted())
     }
 
     @Test
-    func anEarlyRemovalOfAnItemMissingFromTheResultsStaysOut() {
-        var assembler = SnapshotAssembler()
+    func theInitialSnapshotOutranksAnEarlierRemoval() {
+        let snapshots = Self.snapshots(from: [
+            .update(added: [Self.item(id: 9)], updated: [], removed: []),
+            .update(added: [], updated: [], removed: [Self.item(id: 9).url]),
+            .initialSnapshot([Self.item(id: 1)])
+        ])
 
-        _ = assembler.applyUpdate(added: [Self.item(id: 9)], updated: [], removed: [])
-        _ = assembler.applyUpdate(added: [], updated: [], removed: [Self.item(id: 9).url])
-        let initial = assembler.applyInitial([Self.item(id: 1)])
-
-        #expect(initial.map(\.id) == [1])
+        #expect(snapshots == [[1]])
     }
 
     @Test
-    func anUpdateAfterTheInitialSnapshotIsMergedAndSentOnlyOnce() {
-        var assembler = SnapshotAssembler()
-        _ = assembler.applyInitial([Self.item(id: 1), Self.item(id: 2)])
+    func anUpdateAfterTheInitialSnapshotIsKept() {
+        let snapshots = Self.snapshots(from: [
+            .initialSnapshot([Self.item(id: 1), Self.item(id: 2)]),
+            .update(added: [Self.item(id: 3)], updated: [], removed: [Self.item(id: 1).url])
+        ])
 
-        let merged = assembler.applyUpdate(added: [Self.item(id: 3)], updated: [], removed: [Self.item(id: 1).url])
-        let repeated = assembler.applyUpdate(added: [Self.item(id: 3)], updated: [], removed: [])
-
-        #expect(merged?.map(\.id).sorted() == [2, 3])
-        #expect(repeated == nil)
+        #expect(snapshots == [[1, 2], [2, 3]])
     }
 
-    private static func item(id: Int) -> DocumentInformation {
+    @Test
+    func anIdenticalSnapshotIsNotSentTwice() {
+        let snapshots = Self.snapshots(from: [
+            .initialSnapshot([Self.item(id: 1), Self.item(id: 2)]),
+            .update(added: [Self.item(id: 3)], updated: [], removed: []),
+            .update(added: [], updated: [Self.item(id: 3)], removed: []),
+            .update(added: [], updated: [], removed: [Self.item(id: 7).url])
+        ])
+
+        #expect(snapshots == [[1, 2], [1, 2, 3]])
+    }
+
+    /// The ids of every Folder Snapshot the assembler sends for `events`, in order.
+    private static func snapshots(from events: [SnapshotAssembler.Event]) -> [[Int]] {
+        var assembler = SnapshotAssembler()
+        return events.compactMap { assembler.apply($0)?.map(\.id).sorted() }
+    }
+
+    private static func item(id: Int, downloadStatus: Double = 1) -> DocumentInformation {
         DocumentInformation(id: id,
                             url: URL(filePath: "/Archive/2024/2024-01-0\(id)--doc__x.pdf"),
                             isTagged: true,
                             sizeInBytes: 100,
-                            downloadStatus: 1,
+                            downloadStatus: downloadStatus,
                             creationDate: nil,
                             contentModificationDate: nil)
     }

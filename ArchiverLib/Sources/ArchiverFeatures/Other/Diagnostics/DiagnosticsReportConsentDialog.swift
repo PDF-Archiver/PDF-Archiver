@@ -3,7 +3,49 @@
 //  ArchiverLib
 //
 
+import ComposableArchitecture
+import Shared
 import SwiftUI
+#if os(iOS)
+import MessageUI
+#endif
+
+extension View {
+    /// The consent dialog and, on iOS, the mail sheet of a `DiagnosticsReportFlow`.
+    func diagnosticsReportFlow(store: StoreOf<DiagnosticsReportFlow>) -> some View {
+        modifier(DiagnosticsReportFlowModifier(store: store))
+    }
+}
+
+private struct DiagnosticsReportFlowModifier: ViewModifier {
+    @Bindable var store: StoreOf<DiagnosticsReportFlow>
+
+    func body(content: Content) -> some View {
+        content
+            .diagnosticsReportConsentDialog(
+                isPresented: $store.isShowingConsent,
+                onSendWithReport: { store.send(.sendWithReportTapped) },
+                onSendWithoutReport: { store.send(.sendWithoutReportTapped) },
+                onCancel: { store.send(.cancelTapped) }
+            )
+            #if os(iOS)
+            .sheet(isPresented: $store.isShowingMailSheet) {
+                if !MFMailComposeViewController.canSendMail() {
+                    Text("Mail is not configured on this device", bundle: #bundle)
+                        .padding()
+                } else {
+                    // Only presented once the consent decision is final, so the attachments are settled.
+                    MailComposeView(
+                        recipient: Constants.mailRecipient,
+                        subject: Constants.mailSubject,
+                        attachments: store.mail.attachments,
+                        onFinish: { sent in store.send(.mailFinished(sent: sent)) }
+                    )
+                }
+            }
+            #endif
+    }
+}
 
 extension View {
     /// A `.confirmationDialog` on iOS and a native `.alert` on macOS, sharing the same title,

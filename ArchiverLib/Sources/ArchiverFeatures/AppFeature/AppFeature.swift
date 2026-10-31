@@ -60,11 +60,14 @@ struct AppFeature {
         #if os(iOS)
         var closesSettingsDestinationOnReturn = false
         #endif
+
+        var crashReportOffer = CrashReportOffer.State()
     }
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case archiveList(ArchiveList.Action)
+        case crashReportOffer(CrashReportOffer.Action)
         case inboxChanged([Document])
         case onLongBackgroundTask
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
@@ -102,6 +105,9 @@ struct AppFeature {
         }
         Scope(\.settings, action: \.settings) {
             Settings()
+        }
+        Scope(\.crashReportOffer, action: \.crashReportOffer) {
+            CrashReportOffer()
         }
 
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it
@@ -181,6 +187,9 @@ struct AppFeature {
                 }
 
             case .binding:
+                return .none
+
+            case .crashReportOffer:
                 return .none
 
             case .inboxChanged(let inbox):
@@ -490,6 +499,7 @@ struct AppView: View {
             #endif
         }
         .modifier(AlertDataModelProvider())
+        .crashReportOffer(store: store.scope(\.crashReportOffer, action: \.crashReportOffer))
         .sheet(isPresented: Binding(store.$tutorialShown).flipped) {
             OnboardingView(isPresented: Binding(store.$tutorialShown).flipped)
                 #if os(macOS)
