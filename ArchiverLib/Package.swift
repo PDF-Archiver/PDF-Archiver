@@ -33,7 +33,7 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.1"),
         .package(url: "https://github.com/pointfreeco/sqlite-data", exact: "1.12.1"),
         // Pinned to the version sqlite-data resolves; `ArchiverDatabase` needs `ValueObservation` directly.
-        .package(url: "https://github.com/groue/GRDB.swift", exact: "7.11.1"),
+        .package(url: "https://github.com/groue/GRDB.swift", exact: "7.12.0"),
         .package(url: "https://github.com/pointfreeco/swift-structured-queries", exact: "0.39.2"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.7"),

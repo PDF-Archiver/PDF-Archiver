@@ -59,6 +59,9 @@ jobs:
           license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --package-paths ArchiverLib/Package.swift
 
       - name: Approve macros
+        # The workspace resolve writes no Package.resolved on Xcode 27; the project's pins carry the same macros.
+        env:
+          PACKAGE_RESOLVED: ../PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
         run: cd ci_scripts && bash ci_post_clone.sh
 
       - name: Resolve like Xcode Cloud
