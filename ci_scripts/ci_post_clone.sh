@@ -7,7 +7,7 @@ set -euo pipefail
 mkdir -p ~/Library/org.swift.swiftpm/security/
 
 # update the macros fingerprints according to the Package.resolved file
-PACKAGE_RESOLVED="../PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+PACKAGE_RESOLVED="${PACKAGE_RESOLVED:-../PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved}"
 
 # List of "packageIdentity targetName" pairs
 PACKAGES="
