@@ -1,6 +1,6 @@
 # Issue tracker: GitHub
 
-Issues and specs for this repo live as GitHub issues; use the `gh` CLI for all operations. A spec is an issue labelled `spec`, and the tickets cut from it are its sub-issues (decided 2026-10-19; until then specs were vault notes).
+Issues and specs for this repo live as GitHub issues; use the `gh` CLI for all operations. A spec is an issue labelled `spec`. The tickets cut from it are local only: files under `.tickets/<spec-number>/` (git-ignored), thrown away once the spec is implemented.
 
 ## Conventions
 
@@ -29,18 +29,19 @@ GitHub shares one number space across issues and PRs, so a bare `#42` may be eit
 ## When a skill says "publish to the issue tracker"
 
 - **A spec** (`/to-spec`): create an issue labelled `spec`, not `ready-for-agent`. Rules under **Specs** below.
-- **A ticket** (`/to-tickets`, `/triage`, `/wayfinder`): create a GitHub issue. A ticket cut from a spec is a sub-issue of the spec issue.
+- **A ticket cut from a spec** (`/to-tickets`): write a local file `.tickets/<spec-number>/<nn>-<slug>.md`, not a GitHub issue. Keep the `ready-for-agent` label as a line in the file. Never create a GitHub sub-issue for it.
+- **Any other ticket** (`/triage`, `/wayfinder`): create a GitHub issue.
 
 ## When a skill says "fetch the relevant ticket"
 
-Run `gh issue view <number> --comments`. If the ticket has a parent (`gh api repos/{owner}/{repo}/issues/<number>/parent`, 404 when it has none) labelled `spec`, read that issue too; it is the source of the ticket.
+A spec ticket is a file under `.tickets/<spec-number>/`; read it and the spec issue it names (`gh issue view <spec-number> --comments`). Any other ticket: `gh issue view <number> --comments`.
 
 ## Specs
 
 - **Title and label:** `Spec: <feature>`, label `spec`. Create the label once per repo if it is missing: `gh label create spec --description "Feature spec; its tickets are sub-issues"`.
 - **Body:** English, the `/to-spec` template's sections as it ships them (Problem Statement, Solution, User Stories, Implementation Decisions, Testing Decisions, Out of Scope, Further Notes).
-- **Tickets:** every ticket cut from the spec is its sub-issue; `ready-for-agent` goes on the tickets, never on the spec.
-- **Done:** close the spec issue once its last sub-issue closes. An implementation decision that is hard to reverse and binds code beyond the feature becomes an ADR in the vault at `~/KnowledgeBase/Resources/PDF Archiver/adr/`, linked in a comment on the spec; the spec itself is never an ADR.
+- **Tickets:** every ticket cut from the spec is a local file in `.tickets/<spec-number>/`, never a GitHub issue; `ready-for-agent` goes on the tickets, never on the spec.
+- **Done:** once the last ticket is implemented, delete `.tickets/<spec-number>/` and close the spec issue. An implementation decision that is hard to reverse and binds code beyond the feature becomes an ADR in the vault at `~/KnowledgeBase/Resources/PDF Archiver/adr/`, linked in a comment on the spec; the spec itself is never an ADR.
 
 ## Wayfinding operations
 

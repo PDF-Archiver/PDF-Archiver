@@ -269,7 +269,7 @@ Main dependencies (from `ArchiverLib/Package.swift`):
 
 ### Issue tracker
 
-Tickets and specs live in GitHub Issues (`gh` CLI): a spec carries the label `spec`, its tickets are sub-issues. See `docs/agents/issue-tracker.md`.
+Tickets and specs live in GitHub Issues (`gh` CLI): a spec carries the label `spec`; its tickets are local files in `.tickets/<spec-number>/` (git-ignored), deleted once the spec is implemented. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
