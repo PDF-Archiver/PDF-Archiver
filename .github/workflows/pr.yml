@@ -9,7 +9,9 @@ concurrency:
 
 jobs:
   SwiftLint:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-26.04 lacks the libxml2.so.2 that the action's swiftlint binary loads
+    # (exit 127). Back to ubuntu-latest once the action ships a binary that runs there.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - name: GitHub Action for SwiftLint (Only files changed in the PR)
