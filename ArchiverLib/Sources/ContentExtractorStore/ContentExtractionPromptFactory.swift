@@ -306,7 +306,7 @@ public enum ContentExtractionPromptFactory {
     /// Maximum number of characters of the user's custom prompt, derived from
     /// the model's context window. Never below ``defaultMaxCustomPromptLength``,
     /// so a model reporting no usable context cannot collapse the cap to zero.
-    static func maxCustomPromptLength(contextSize: Int) -> Int {
+    public static func maxCustomPromptLength(contextSize: Int) -> Int {
         // A quarter of the budget - the document text keeps the other three.
         max(defaultMaxCustomPromptLength, promptBudget(contextSize: contextSize) / 4)
     }

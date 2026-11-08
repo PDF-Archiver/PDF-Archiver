@@ -92,8 +92,11 @@ struct AppleIntelligenceSettingsView: View {
     /// the model is available - so the fallback must not cap what is typed.
     private var maxCustomPromptLength: Int {
         guard #available(iOS 26, macOS 26, *) else { return .max }
-        return ContentExtractorStore.maxCustomPromptLength
+        return ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: contextSize ?? 4096)
     }
+
+    /// Set once the context size is loaded; 4096 is used until then.
+    @State private var contextSize: Int?
 
     var body: some View {
         Form {
@@ -186,6 +189,10 @@ struct AppleIntelligenceSettingsView: View {
         }
         .formStyle(.grouped)
         .foregroundStyle(.primary)
+        .task {
+            guard #available(iOS 26, macOS 26, *) else { return }
+            contextSize = await ContentExtractorStore.loadContextSize()
+        }
         .onAppear {
             store.send(.onAppear)
         }
