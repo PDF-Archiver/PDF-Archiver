@@ -112,7 +112,12 @@ struct StorageSelectionView: View {
                 } label: {
                     Text("Storage", bundle: #bundle)
                 }
+                #if os(macOS)
+                // the default macOS form style lays radio buttons out in one row
+                .pickerStyle(.radioGroup)
+                #else
                 .pickerStyle(.inline)
+                #endif
 
                 if case .local(let url) = activeType {
                     LabeledContent {
