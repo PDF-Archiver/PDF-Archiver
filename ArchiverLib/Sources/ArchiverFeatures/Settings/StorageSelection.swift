@@ -117,6 +117,8 @@ struct StorageSelectionView: View {
                 .pickerStyle(.radioGroup)
                 #else
                 .pickerStyle(.inline)
+                // the section footer already names the active option, the title row only adds noise
+                .labelsHidden()
                 #endif
 
                 if case .local(let url) = activeType {
