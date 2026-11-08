@@ -13,7 +13,6 @@
 
 import ArchiverModels
 import Foundation
-import Synchronization
 import Testing
 
 @testable import ContentExtractorStore
@@ -612,30 +611,5 @@ struct ContentExtractorStoreOrchestrationTests {
         _ = try await store.extract(from: "text", with: [])
 
         #expect(await visualFinderCalled.value != true)
-    }
-}
-
-// MARK: - Context size cache
-
-@Suite("ContextSizeCache")
-struct ContextSizeCacheTests {
-
-    @Test("Loads once, off the main thread, and serves the cached value")
-    @available(iOS 26, macOS 26, *)
-    func loadsOnce() async {
-        let calls = Mutex(0)
-        let onMain = Mutex(false)
-        let cache = ContextSizeCache {
-            calls.withLock { $0 += 1 }
-            onMain.withLock { $0 = Thread.isMainThread }
-            return 8192
-        }
-
-        #expect(cache.cachedValue == nil)
-        #expect(await cache.value() == 8192)
-        #expect(await cache.value() == 8192)
-        #expect(cache.cachedValue == 8192)
-        #expect(calls.withLock { $0 } == 1)
-        #expect(!onMain.withLock { $0 })
     }
 }

@@ -9,7 +9,6 @@ import ArchiverModels
 import Foundation
 import FoundationModels
 import Logging
-import Synchronization
 
 @available(iOS 26, macOS 26, *)
 public actor ContentExtractorStore {
@@ -34,21 +33,11 @@ public actor ContentExtractorStore {
     )
     #endif
 
-    /// Maximum number of characters of the user's custom prompt.
-    ///
-    /// The settings UI caps its input with this value and the prompt builder
-    /// truncates with it, so the character counter never promises more than what
-    /// actually reaches the model.
-    ///
-    /// Reads only the cached context size, never the model, and falls back to
-    /// ``ContextSizeCache/fallback`` until ``loadMaxCustomPromptLength()`` has filled it.
-    public static var maxCustomPromptLength: Int {
-        ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: ContextSizeCache.shared.cachedValue ?? ContextSizeCache.fallback)
-    }
-
-    /// Fills the context size cache off the calling thread and returns the cap.
-    public static func loadMaxCustomPromptLength() async -> Int {
-        ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: await ContextSizeCache.shared.value())
+    /// The model's context size. Runs off the calling actor, because Xcode flags a
+    /// synchronous read on a User-initiated thread as a priority inversion.
+    @concurrent
+    public static func loadContextSize() async -> Int {
+        SystemLanguageModel.default.contextSize
     }
 
     private let cache: SuggestionCache
@@ -271,7 +260,7 @@ public actor ContentExtractorStore {
     private static let liveResponder: Responder = { documents, neighbours, customPrompt, text in
         let session = LanguageModelSession(model: .default, tools: [], instructions: instructions(for: documents, neighbours: neighbours))
         let model = SystemLanguageModel.default
-        let contextSize = await ContextSizeCache.shared.value()
+        let contextSize = await loadContextSize()
 
         let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(
             customPrompt,
@@ -359,41 +348,5 @@ extension ContentExtractorStore {
     public struct Info: Sendable, Equatable {
         public let specification: String
         public let tags: [String]
-    }
-}
-
-/// Holds the model's context size so it is read once, on a background task.
-///
-/// Xcode flags synchronous `SystemLanguageModel.contextSize` reads on a
-/// User-initiated thread as a priority inversion against a Background thread.
-@available(iOS 26, macOS 26, *)
-final class ContextSizeCache: Sendable {
-    static let shared = ContextSizeCache { SystemLanguageModel.default.contextSize }
-
-    /// Conservative value used until the real one is loaded.
-    static let fallback = 4096
-
-    private let loader: @Sendable () -> Int
-    private let stored = Mutex<Int?>(nil)
-
-    init(loader: @escaping @Sendable () -> Int) {
-        self.loader = loader
-    }
-
-    /// The loaded value, or `nil` before the first load finished.
-    var cachedValue: Int? {
-        stored.withLock { $0 }
-    }
-
-    /// The context size; the first call runs the loader in a detached background task.
-    func value() async -> Int {
-        if let cachedValue { return cachedValue }
-        let loader = loader
-        let loaded = await Task.detached(priority: .utility) { loader() }.value
-        return stored.withLock { current in
-            if let current { return current }
-            current = loaded
-            return loaded
-        }
     }
 }
