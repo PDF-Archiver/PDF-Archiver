@@ -44,7 +44,7 @@ struct SettingsTests {
     func storageTypeTitles() throws {
         #if os(macOS)
         #expect(StorageType.iCloudDrive.title == "iCloud Drive")
-        #expect(StorageType.local(URL(fileURLWithPath: "/test")).title == "Drive")
+        #expect(StorageType.local(URL(fileURLWithPath: "/test")).title == "Folder")
         #else
         #expect(StorageType.iCloudDrive.title == "iCloud Drive")
         #expect(StorageType.appContainer.title == "Local")

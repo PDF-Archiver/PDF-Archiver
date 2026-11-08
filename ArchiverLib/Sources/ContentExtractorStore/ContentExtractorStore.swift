@@ -33,13 +33,11 @@ public actor ContentExtractorStore {
     )
     #endif
 
-    /// Maximum number of characters of the user's custom prompt.
-    ///
-    /// The settings UI caps its input with this value and the prompt builder
-    /// truncates with it, so the character counter never promises more than what
-    /// actually reaches the model.
-    public static var maxCustomPromptLength: Int {
-        ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: SystemLanguageModel.default.contextSize)
+    /// The model's context size. Runs off the calling actor, because Xcode flags a
+    /// synchronous read on a User-initiated thread as a priority inversion.
+    @concurrent
+    public static func loadContextSize() async -> Int {
+        SystemLanguageModel.default.contextSize
     }
 
     private let cache: SuggestionCache
@@ -262,11 +260,11 @@ public actor ContentExtractorStore {
     private static let liveResponder: Responder = { documents, neighbours, customPrompt, text in
         let session = LanguageModelSession(model: .default, tools: [], instructions: instructions(for: documents, neighbours: neighbours))
         let model = SystemLanguageModel.default
-        let contextSize = model.contextSize
+        let contextSize = await loadContextSize()
 
         let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(
             customPrompt,
-            maxLength: maxCustomPromptLength
+            maxLength: ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: contextSize)
         )
         let customPromptLength = customPrompt?.count ?? 0
         var truncatedText = ContentExtractionPromptFactory.truncatedText(
