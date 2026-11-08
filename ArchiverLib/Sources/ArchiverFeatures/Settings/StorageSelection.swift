@@ -113,8 +113,10 @@ struct StorageSelectionView: View {
                     Text("Storage", bundle: #bundle)
                 }
                 #if os(macOS)
-                // the default macOS form style lays radio buttons out in one row
+                // with its label, a grouped form puts the radio buttons in one row next to it;
+                // without it, each option gets a row of its own
                 .pickerStyle(.radioGroup)
+                .labelsHidden()
                 #else
                 .pickerStyle(.inline)
                 // the section footer already names the active option, the title row only adds noise
