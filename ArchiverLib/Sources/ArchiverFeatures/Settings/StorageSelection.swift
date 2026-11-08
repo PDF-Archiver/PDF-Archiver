@@ -46,6 +46,10 @@ struct StorageSelection {
                 return .none
 
             case .onStorageTypeTapped(let type):
+                // Selecting the active type again would only move the archive onto itself.
+                if type != .local, type == state.selectedArchiveType.getPath().selectionType {
+                    return .none
+                }
                 switch type {
                 case .iCloudDrive:
                     return .send(.moveToStorageTypeStart(.iCloudDrive))
@@ -90,25 +94,40 @@ struct StorageSelectionView: View {
 
     var body: some View {
         Form {
-            ForEach(StorageSelectionType.allCases, id: \.rawValue) { storageType in
-                Section(footer: storageType.descriptionView) {
-                    Button {
-                        store.send(.onStorageTypeTapped(storageType))
-                    } label: {
-                        HStack {
-                            Label {
-                                Text(storageType.title, bundle: #bundle)
-                            } icon: {
-                                Image(systemName: storageType.icon)
-                            }
-                            // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
-                            .foregroundColor(.primary)
-                            Spacer()
-                            if storageType == store.selectedArchiveType.getPath().selectionType {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(Color.green)
-                            }
+            let activeType = store.selectedArchiveType.getPath()
+            Section(footer: activeType.selectionType.descriptionView) {
+                // The binding reads the stored type, so cancelling the folder picker keeps the previous selection.
+                Picker(selection: Binding(
+                    get: { activeType.selectionType },
+                    set: { store.send(.onStorageTypeTapped($0)) }
+                )) {
+                    ForEach(StorageSelectionType.allCases, id: \.rawValue) { storageType in
+                        Label {
+                            Text(storageType.title, bundle: #bundle)
+                        } icon: {
+                            Image(systemName: storageType.icon)
                         }
+                        .tag(storageType)
+                    }
+                } label: {
+                    Text("Storage", bundle: #bundle)
+                }
+                #if os(macOS)
+                // with its label, a grouped form puts the radio buttons in one row next to it;
+                // without it, each option gets a row of its own
+                .pickerStyle(.radioGroup)
+                .labelsHidden()
+                #else
+                .pickerStyle(.inline)
+                // the section footer already names the active option, the title row only adds noise
+                .labelsHidden()
+                #endif
+
+                if case .local(let url) = activeType {
+                    LabeledContent {
+                        Text(url.lastPathComponent)
+                    } label: {
+                        Text("Folder", bundle: #bundle)
                     }
                 }
             }
@@ -184,11 +203,7 @@ enum StorageSelectionType: String, CaseIterable {
         #endif
 
         case .local:
-            #if os(macOS)
-            return "Drive"
-            #else
             return "Folder"
-            #endif
         }
     }
 
@@ -203,11 +218,7 @@ enum StorageSelectionType: String, CaseIterable {
         #endif
 
         case .local:
-            #if os(macOS)
-            return "externaldrive"
-            #else
             return "folder"
-            #endif
         }
     }
 
@@ -228,7 +239,7 @@ enum StorageSelectionType: String, CaseIterable {
         #endif
 
         case .local:
-            Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
+            Text("Your documents are stored in a folder you choose, e.g. in iCloud Drive, on an external drive or in a shared folder. Synchronization is handled by the folder's provider.", bundle: #bundle)
         }
     }
 }

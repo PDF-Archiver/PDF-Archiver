@@ -218,7 +218,8 @@ extension NSMetadataItem: nonisolated Log {
             return nil
         }
         guard let downloadingStatus = statusValues.ubiquitousItemDownloadingStatus else {
-            log.errorAndAssert("Could not parse download status.")
+            // The file left this URL after the query saw it, e.g. renamed or moved. Its next update reports it again.
+            log.warning("Could not parse download status.")
             return nil
         }
         let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue
