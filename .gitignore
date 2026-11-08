@@ -57,3 +57,4 @@ ci_scripts/macros.json
 
 # Xcode Cloud and the Evaluations scheme resolve through the workspace; this copy only drifted
 Evaluations/Evaluations.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+.tickets/

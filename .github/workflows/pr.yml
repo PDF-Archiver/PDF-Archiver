@@ -9,15 +9,23 @@ concurrency:
 
 jobs:
   SwiftLint:
-    # Pinned: ubuntu-26.04 lacks the libxml2.so.2 that the action's swiftlint binary loads
-    # (exit 127). Back to ubuntu-latest once the action ships a binary that runs there.
-    runs-on: ubuntu-24.04
+    # Ubuntu instead of macOS: linting needs no Apple toolchain, and the official Linux
+    # image below already ships the pinned SwiftLint binary.
+    runs-on: ubuntu-latest
+    # Pinned, so CI and a local run of the same image report the same violations:
+    # `docker run --rm -v "$PWD":/work -w /work ghcr.io/realm/swiftlint:0.65.1 --strict`
+    # (the image's entrypoint is already `swiftlint`). The image has neither git nor
+    # curl; checkout falls back to the REST API to download the ref when git isn't on
+    # PATH, which is all this job needs since it lints the whole tree, not a diff.
+    container: ghcr.io/realm/swiftlint:0.65.1
     steps:
       - uses: actions/checkout@v7
-      - name: GitHub Action for SwiftLint (Only files changed in the PR)
-        uses: stanfordbdhg/action-swiftlint@v4
-        env:
-          DIFF_BASE: ${{ github.base_ref }}
+
+      # From the repo root, so .swiftlint.yml applies and .build checkouts stay excluded.
+      # A container job's `run:` steps exec into the running container with `sh`, so the
+      # image's `swiftlint` entrypoint plays no part here.
+      - name: Lint
+        run: swiftlint --strict
 
   # Resolves like Xcode Cloud: Renovate's own commit may go red when a bump changes the dependency
   # set, which is expected; the bot head that follows gets this run in approval-required state.
