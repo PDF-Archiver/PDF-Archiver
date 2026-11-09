@@ -123,15 +123,12 @@ final class DocumentFormKeyboardUITests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false
-
-        // The tagging shot opens the receipt with premium active, so no paywall stands in the way.
         app = XCUIApplication()
-        app.launch("02-tagging", locale: .english, receipt: try ScreenshotReceipt.url())
-        // The fixture fills the form after the first render; tapping before that races it.
-        XCTAssertTrue(specificationField.waitForExistence(timeout: 30), "the form was never filled")
     }
 
     func testSpecificationFieldTakesKeyboardAfterTagEntry() throws {
+        // The tagging shot opens the receipt with premium active, so no paywall stands in the way.
+        try launch("02-tagging")
         // A filled text field reports its value instead of its prompt, so it is found by the value.
         let specification = specificationField
         let tag = app.textFields.matching(NSPredicate(format: "placeholderValue == 'Enter Tag'")).firstMatch
@@ -145,6 +142,26 @@ final class DocumentFormKeyboardUITests: XCTestCase {
 
         specification.tap()
         XCTAssertTrue(hasKeyboardFocus(specification), "tap on the specification field after a tag")
+    }
+
+    /// The first form of a launch opened from the archive used to lose the first tap: the
+    /// keyboard brought the hidden Tags and Years tabs on screen, each with a second form.
+    func testSpecificationFieldTakesKeyboardOnFirstTapInArchive() throws {
+        // The document shot opens the tagged receipt in the archive.
+        app.launch("03-document", locale: .english, receipt: try ScreenshotReceipt.url())
+        let edit = app.buttons["Edit"].firstMatch
+        XCTAssertTrue(edit.waitForExistence(timeout: 30), "the document was never opened")
+        edit.tap()
+        XCTAssertTrue(specificationField.waitForExistence(timeout: 10), "the form never appeared")
+
+        specificationField.tap()
+        XCTAssertTrue(hasKeyboardFocus(specificationField), "first tap on the specification field")
+    }
+
+    private func launch(_ screenshotCase: String) throws {
+        app.launch(screenshotCase, locale: .english, receipt: try ScreenshotReceipt.url())
+        // The fixture fills the form after the first render; tapping before that races it.
+        XCTAssertTrue(specificationField.waitForExistence(timeout: 30), "the form was never filled")
     }
 
     private var specificationField: XCUIElement {
