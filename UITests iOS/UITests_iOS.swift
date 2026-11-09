@@ -114,3 +114,49 @@ final class AppStoreScreenshotUITests: XCTestCase {
         }
     }
 }
+
+/// The tagging form must hand the keyboard to whichever text field is tapped.
+final class DocumentFormKeyboardUITests: XCTestCase {
+
+    private var app: XCUIApplication!
+
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        continueAfterFailure = false
+
+        // The tagging shot opens the receipt with premium active, so no paywall stands in the way.
+        app = XCUIApplication()
+        app.launch("02-tagging", locale: .english, receipt: try ScreenshotReceipt.url())
+        // The fixture fills the form after the first render; tapping before that races it.
+        XCTAssertTrue(specificationField.waitForExistence(timeout: 30), "the form was never filled")
+    }
+
+    func testSpecificationFieldTakesKeyboardAfterTagEntry() throws {
+        // A filled text field reports its value instead of its prompt, so it is found by the value.
+        let specification = specificationField
+        let tag = app.textFields.matching(NSPredicate(format: "placeholderValue == 'Enter Tag'")).firstMatch
+
+        specification.tap()
+        XCTAssertTrue(hasKeyboardFocus(specification), "first tap on the specification field")
+
+        tag.tap()
+        XCTAssertTrue(hasKeyboardFocus(tag), "tap on the tag field")
+        tag.typeText("invoice\n")
+
+        specification.tap()
+        XCTAssertTrue(hasKeyboardFocus(specification), "tap on the specification field after a tag")
+    }
+
+    private var specificationField: XCUIElement {
+        app.textFields.matching(NSPredicate(format: "value == 'tom-tailor-jeans'")).firstMatch
+    }
+
+    /// When the bug hits, the field gets focus for a few milliseconds and loses it again, so the
+    /// focus has to arrive and then hold for a second.
+    private func hasKeyboardFocus(_ element: XCUIElement) -> Bool {
+        let gained = expectation(for: NSPredicate(format: "hasKeyboardFocus == true"), evaluatedWith: element)
+        guard XCTWaiter().wait(for: [gained], timeout: 2) == .completed else { return false }
+        let lost = expectation(for: NSPredicate(format: "hasKeyboardFocus == false"), evaluatedWith: element)
+        return XCTWaiter().wait(for: [lost], timeout: 1) == .timedOut && app.keyboards.firstMatch.exists
+    }
+}
