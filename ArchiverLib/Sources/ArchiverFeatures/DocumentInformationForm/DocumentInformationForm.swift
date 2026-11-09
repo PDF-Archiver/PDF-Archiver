@@ -510,8 +510,11 @@ struct DocumentInformationFormView: View {
         }
         .formStyle(.grouped)
         .bind($store.focusedField, to: $focusedField)
+        #if os(macOS)
         // On macOS the `.date` that `onTask` sets is not enough to focus the date picker on open.
+        // On iPadOS it pulls focus back to the date picker, so a tapped text field gets no keyboard.
         .defaultFocus($focusedField, .date)
+        #endif
         .task(id: store.document.id) {
             await store.send(.onTask).finish()
         }
