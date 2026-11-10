@@ -40,6 +40,18 @@ struct AppFeature {
         var showScanButton: Bool {
             selectedTab == .search && archiveList.documentDetails == nil && !archiveList.isSearching
         }
+        /// The one archive tab that renders the list. All of them share the `archiveList` store, and
+        /// every rendered copy would push its own document page and form for it.
+        var archiveListTab: Tab {
+            switch selectedTab {
+            case .sectionTags, .sectionYears:
+                return selectedTab
+
+            default:
+                return .search
+            }
+        }
+
         var isShowingDocument: Bool {
             switch selectedTab {
             case .search, .sectionTags, .sectionYears:
@@ -426,18 +438,18 @@ struct AppView: View {
         TabView(selection: $store.selectedTab) {
             #if os(iOS)
             Tab(value: AppFeature.State.Tab.search, role: .search) {
-                archiveList
+                archiveList(in: .search)
                     .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
             #else
             if #available(macOS 26, *) {
                 Tab(value: AppFeature.State.Tab.search, role: .search) {
-                    archiveList
+                    archiveList(in: .search)
                 }
             } else {
                 // old fallback solution
                 Tab(String(localized: "Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
-                    archiveList
+                    archiveList(in: .search)
                 }
             }
             #endif
@@ -460,7 +472,7 @@ struct AppView: View {
             TabSection(String(localized: "Tags", bundle: #bundle)) {
                 ForEach(store.projection.topTags, id: \.self) { tag in
                     Tab(tag, systemImage: "tag", value: AppFeature.State.Tab.sectionTags(tag)) {
-                        archiveList
+                        archiveList(in: .sectionTags(tag))
                     }
                 }
             }
@@ -470,7 +482,7 @@ struct AppView: View {
             TabSection("\(String(localized: "Years", bundle: #bundle))") {
                 ForEach(store.projection.taggedYears, id: \.self) { year in
                     Tab("\(year, format: .number.grouping(.never))", systemImage: "calendar", value: AppFeature.State.Tab.sectionYears(year)) {
-                        archiveList
+                        archiveList(in: .sectionYears(year))
                     }
                 }
             }
@@ -520,13 +532,18 @@ struct AppView: View {
         }
     }
 
-    private var archiveList: some View {
-        NavigationStack {
-            ArchiveListView(store: store.scope(\.archiveList, action: \.archiveList))
-                .navigationTitle(Text("Archive", bundle: #bundle))
-                .toolbar {
-                    loadingIndicator
-                }
+    /// iPadOS lays out the hidden Tags and Years tabs when the keyboard first appears. A form there
+    /// shares the store's focus binding and clears the focus of the tapped text field.
+    @ViewBuilder
+    private func archiveList(in tab: AppFeature.State.Tab) -> some View {
+        if store.archiveListTab == tab {
+            NavigationStack {
+                ArchiveListView(store: store.scope(\.archiveList, action: \.archiveList))
+                    .navigationTitle(Text("Archive", bundle: #bundle))
+                    .toolbar {
+                        loadingIndicator
+                    }
+            }
         }
     }
 

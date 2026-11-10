@@ -46,6 +46,21 @@ struct AppFeatureTests {
     }
 
     @Test
+    func onlyOneTabRendersTheArchiveList() {
+        var state = AppFeature.State()
+        #expect(state.archiveListTab == .search)
+
+        state.selectedTab = .sectionTags("invoice")
+        #expect(state.archiveListTab == .sectionTags("invoice"))
+        state.selectedTab = .sectionYears(2024)
+        #expect(state.archiveListTab == .sectionYears(2024))
+
+        // The search tab keeps the list while another kind of tab is in front.
+        state.selectedTab = .inbox
+        #expect(state.archiveListTab == .search)
+    }
+
+    @Test
     func anOpenDocumentOnlyCountsOnTheTabThatShowsIt() {
         var state = AppFeature.State()
         #expect(!state.isShowingDocument)
