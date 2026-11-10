@@ -38,8 +38,8 @@ extension Optional where Wrapped == StorageType {
     }
 }
 
-@MainActor
-final class PathManager: Log {
+/// An actor, not main-actor isolated: it touches no UI, and a storage switch moves whole year folders.
+actor PathManager: Log {
 
     static let shared = PathManager()
 

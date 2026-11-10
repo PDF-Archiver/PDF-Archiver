@@ -11,8 +11,8 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@MainActor
-struct StatsProvider: AppIntentTimelineProvider {
+// Not main-actor isolated, for the reason given on `UntaggedDocumentsProvider`.
+nonisolated struct StatsProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> StatsEntry {
         let configuration = ConfigurationAppIntent()
         let yearStats: [Int: Int] = [
@@ -41,7 +41,8 @@ struct StatsProvider: AppIntentTimelineProvider {
     }
 }
 
-struct StatsEntry: TimelineEntry {
+// Plain data built by the nonisolated provider and read by WidgetKit off the main thread.
+nonisolated struct StatsEntry: TimelineEntry {
     let date: Date
     let yearStats: [Int: Int]   // year: count
 }

@@ -38,6 +38,8 @@ struct CrashReportOffer {
         }
     }
 
+    private enum CancelID { case launch }
+
     @Dependency(\.continuousClock) var clock
     @Dependency(\.crashReports) var crashReports
 
@@ -84,6 +86,9 @@ struct CrashReportOffer {
                         }
                     }
                 )
+                // Every window's `.task` sends `.launched` (a second window on macOS or iPad): one
+                // MetricKit consumer at a time, not one per window.
+                .cancellable(id: CancelID.launch, cancelInFlight: true)
 
             case .launchWindowClosed:
                 state.isLaunchWindowOpen = false
@@ -91,7 +96,11 @@ struct CrashReportOffer {
 
             case .reportsArrived(let reports):
                 guard state.isLaunchWindowOpen else { return .none }
-                state.offered += reports
+                // A repeated `.launched` replays the stored reports; each one is offered only once.
+                let known = Set((state.offered + state.inMail).map(\.filename))
+                let unseen = reports.filter { !known.contains($0.filename) }
+                guard !unseen.isEmpty else { return .none }
+                state.offered += unseen
                 state.alert = Self.alert
                 return .none
             }

@@ -9,8 +9,7 @@
 import SwiftUI
 
 /// A view that arranges its subviews in horizontal line and wraps them to the next lines if necessary.
-@MainActor
-public struct WrappingHStack: @preconcurrency Layout {
+public struct WrappingHStack: Layout {
     /// The guide for aligning the subviews in this stack. This guide has the same screen coordinate for every subview.
     public var alignment: Alignment
 

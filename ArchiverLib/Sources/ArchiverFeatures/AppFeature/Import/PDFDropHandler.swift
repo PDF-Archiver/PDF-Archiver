@@ -24,6 +24,8 @@ final class PDFDropHandler: Log {
     /// from the processor's progress events, so the button state reflects the
     /// real background queue (including staged Share Extension imports).
     private var queuedCount = 0
+    /// Returns the button from `.finished` to `.noDocument` after a short delay.
+    @ObservationIgnored private var resetTask: Task<Void, Never>?
 
     func startImport() {
         documentProcessingState = .processing
@@ -129,12 +131,16 @@ final class PDFDropHandler: Log {
                 guard queuedCount == 0 else { break }
 
                 documentProcessingState = .finished
-                try? await Task.sleep(for: .seconds(2))
-                if queuedCount == 0, documentProcessingState == .finished {
+                // Its own task: sleeping in this loop would hold back the next `.queued` event.
+                resetTask?.cancel()
+                resetTask = Task { [weak self] in
+                    do { try await Task.sleep(for: .seconds(2)) } catch { return }
+                    guard let self, queuedCount == 0, documentProcessingState == .finished else { return }
                     documentProcessingState = .noDocument
                 }
             }
         }
+        resetTask?.cancel()
     }
 }
 
@@ -167,11 +173,9 @@ extension PDFDropHandler: DropDelegate {
                     let data = try await provider.getItem(for: type)
 
                     guard let data else { continue }
-                    if let pdf = PDFDocument(data: data) {
-                        await handle(pdf: pdf)
-                    } else if let image = PlatformImage(data: data) {
-                        await handle(image: image)
-                    }
+                    // This task runs on the main actor; `handle(input:)` decodes and re-serializes
+                    // the document off it.
+                    try await handle(input: data as any NSSecureCoding)
                 }
             } catch {
                 // A file the user dropped can be unreadable; that is not a programmer error.
@@ -190,17 +194,7 @@ extension NSItemProvider {
         if let data = item as? Data {
             return data
         } else if let url = item as? URL {
-            var data: Data?
-            try url.securityScope { url in
-                if let pdf = PDFDocument(url: url) {
-                    data = pdf.dataRepresentation()
-                } else if let receivedData = try Data(contentsOf: url) as Data? {
-                    data = receivedData
-                } else {
-                    Logger.pdfDropHandler.errorAndAssert("Could not handle url")
-                }
-            }
-            return data
+            return try await Self.readData(at: url)
         } else if let image = item as? PlatformImage {
             return image.jpg(quality: 1)
         } else if let pdfDocument = item as? PDFDocument {
@@ -209,5 +203,22 @@ extension NSItemProvider {
             Logger.pdfDropHandler.errorAndAssert("Failed to get data")
             return nil
         }
+    }
+
+    /// `getItem(for:)` runs on its caller's actor - the main actor for a drop - so reading and
+    /// re-serializing the dropped file happens here, off it.
+    @concurrent
+    private static func readData(at url: URL) async throws -> Data? {
+        var data: Data?
+        try url.securityScope { url in
+            if let pdf = PDFDocument(url: url) {
+                data = pdf.dataRepresentation()
+            } else if let receivedData = try Data(contentsOf: url) as Data? {
+                data = receivedData
+            } else {
+                Logger.pdfDropHandler.errorAndAssert("Could not handle url")
+            }
+        }
+        return data
     }
 }

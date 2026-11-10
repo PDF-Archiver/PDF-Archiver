@@ -17,6 +17,9 @@ extension NSItemProvider {
         case timeout
     }
 
+    // The target defaults to the main actor; reading, decoding and writing a large PDF or
+    // photo there would stall the extension's UI, so the whole save runs off the main actor.
+    @concurrent
     func saveData(at url: URL, with validUTIs: [UTType]) async throws -> Bool {
         var lastError: (any Error)?
         var data: Data?
@@ -64,7 +67,7 @@ extension NSItemProvider {
     }
 
     /// Validates if a filename has the correct PDF Archiver structure with date, description, and tags
-    private static func isValidTaggedFilename(_ filename: String) async -> Bool {
+    nonisolated private static func isValidTaggedFilename(_ filename: String) async -> Bool {
         let parsed = await Document.parseFilename(filename)
 
         // Valid if we have date, specification, and tags (all non-nil and non-empty)
@@ -79,7 +82,7 @@ extension NSItemProvider {
         return true
     }
 
-    private func getItem(for type: UTType) async throws -> (Data?, URL?) {
+    nonisolated private func getItem(for type: UTType) async throws -> (Data?, URL?) {
         let rawData = try await loadItem(forTypeIdentifier: type.identifier)
 
         if let pathData = rawData as? Data,
@@ -99,12 +102,12 @@ extension NSItemProvider {
         }
     }
 
-    private static func getDataIfValid(from url: URL) -> Data? {
+    nonisolated private static func getDataIfValid(from url: URL) -> Data? {
         guard let data = try? Data(contentsOf: url) else { return nil }
         return validate(data)
     }
 
-    private static func validate(_ data: Data?) -> Data? {
+    nonisolated private static func validate(_ data: Data?) -> Data? {
         guard let inputData = data else { return data }
         if PDFDocument(data: inputData) == nil, UIImage(data: inputData) == nil {
             return nil
@@ -120,7 +123,7 @@ extension NSItemProvider.NSItemProviderError: LogSafeError {
 private extension UIImage {
     /// Bake the EXIF orientation into the bitmap: the processor runs OCR on `cgImage`,
     /// which ignores it, so a sideways photo would get text boxes for an upright page.
-    func normalizedOrientation() -> UIImage {
+    nonisolated func normalizedOrientation() -> UIImage {
         guard imageOrientation != .up else { return self }
         let format = UIGraphicsImageRendererFormat.default()
         // Keep the photo's pixel size; the default display scale would triple it and

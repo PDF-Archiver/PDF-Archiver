@@ -64,6 +64,9 @@ public actor ArchiveStore: Log {
         for provider in providers {
             await provider.stop()
         }
+        // A newer `update()` ran while this one stopped the providers: clearing now would drop its
+        // live providers and tasks unstopped, and leave this run's stale folders behind.
+        guard updateID == updateCount else { return }
         providers = []
         folderObservationTasks.forEach { $0.cancel() }
         folderObservationTasks = []

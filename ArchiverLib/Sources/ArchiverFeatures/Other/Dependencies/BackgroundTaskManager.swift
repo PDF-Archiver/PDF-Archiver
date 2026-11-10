@@ -14,6 +14,10 @@ import Logging
 import Shared
 import UserNotifications
 
+// Unchecked: BackgroundTasks does not mark `BGTask` or `BGTaskScheduler` `Sendable`. The task is
+// only handed to the actor, which sets its atomic `expirationHandler` once, and is completed exactly
+// once through `BackgroundTaskCompletion`; the scheduler is the shared singleton, used only for
+// `register`/`submit`/`cancel`. Remove once the SDK declares the conformances.
 extension BGProcessingTask: @unchecked @retroactive Sendable {}
 extension BGTaskScheduler: @unchecked @retroactive Sendable {}
 

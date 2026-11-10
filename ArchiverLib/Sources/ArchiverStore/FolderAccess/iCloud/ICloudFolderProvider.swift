@@ -25,7 +25,7 @@ final class ICloudFolderProvider: FolderProvider {
     /// Delivers `NSMetadataQuery`'s notifications off the main thread: the observer below reads
     /// each `NSMetadataItem` synchronously (it is not `Sendable`), which includes the per-item
     /// resource read `uniqueId()` makes - main would otherwise stall on every batch of changes.
-    private static let metadataQueryOperationQueue: OperationQueue = {
+    nonisolated private static let metadataQueryOperationQueue: OperationQueue = {
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
         queue.qualityOfService = .utility
@@ -90,10 +90,15 @@ final class ICloudFolderProvider: FolderProvider {
             }
         ])
 
-        observationTask = Task(priority: .utility) { [weak self] in
+        // `startQuery` must run on the query's `operationQueue` or on main (NSMetadata.h). `stop()`
+        // goes through the same serial queue, so a provider stopped before this operation ran is
+        // never started afterwards.
+        Self.metadataQueryOperationQueue.addOperation {
             query.start()
             Self.log.debug("Starting the documents query.")
+        }
 
+        observationTask = Task(priority: .utility) { [weak self] in
             // A single consumer keeps the order the query's queue gave the events.
             for await event in events {
                 guard let self else { return }
@@ -105,14 +110,21 @@ final class ICloudFolderProvider: FolderProvider {
     deinit {
         Self.log.debug("deinit ICloudFolderProvider")
         observationTask?.cancel()
-        metadataQuery.stop()
+        Self.stopOnQueue(metadataQuery)
     }
 
     func stop() {
         observationTask?.cancel()
         observationTask = nil
         notificationTokenBox = nil
-        metadataQuery.stop()
+        Self.stopOnQueue(metadataQuery)
+    }
+
+    /// Queued behind the `start()` operation from `init`, so start and stop keep their order.
+    nonisolated private static func stopOnQueue(_ query: NSMetadataQuery) {
+        metadataQueryOperationQueue.addOperation {
+            query.stop()
+        }
     }
 
     /// Frees its `NotificationCenter` observers when it deallocates, so `ICloudFolderProvider`'s
@@ -268,4 +280,8 @@ extension URLUbiquitousItemDownloadingStatus {
     }
 }
 
+// Unchecked: Foundation does not mark `NSMetadataQuery` `Sendable`. The provider only shares the query
+// with its observers and the operations on its serial `operationQueue`: results are read, and the
+// query started and stopped, solely on that queue. Remove once Foundation
+// declares the conformance itself.
 extension NSMetadataQuery: @unchecked @retroactive Sendable {}

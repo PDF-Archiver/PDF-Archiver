@@ -479,6 +479,9 @@ extension PaywallView {
                     "loadedProductIds": "\(loaded.map(\.id))"
                 ])
             }
+        } catch is CancellationError {
+            // `.task` ends with the paywall; that is no failed load.
+            return
         } catch {
             Logger.inAppPurchase.error("Loading paywall products failed", metadata: [
                 "error": "\(LogRedact.describe(error))"
@@ -488,7 +491,9 @@ extension PaywallView {
     }
 
     private func buySelectedPlan() async {
-        guard let product = products[selectedPlan] else { return }
+        // The flags are set only once the button's `Task` runs, so a fast second tap or the other
+        // button can still queue a call; it ends here instead of overlapping the running one.
+        guard let product = products[selectedPlan], !isPurchasing, !isRestoring else { return }
         isPurchasing = true
         defer { isPurchasing = false }
         errorMessage = nil
@@ -521,6 +526,7 @@ extension PaywallView {
     }
 
     private func restorePurchases() async {
+        guard !isPurchasing, !isRestoring else { return }
         isRestoring = true
         defer { isRestoring = false }
         errorMessage = nil

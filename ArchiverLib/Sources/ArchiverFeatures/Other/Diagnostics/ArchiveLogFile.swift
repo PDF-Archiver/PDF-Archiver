@@ -265,6 +265,9 @@ final class ArchiveLogFile: Sendable, Log {
                     }
                 }
                 return
+            } catch is CancellationError {
+                // A newer resolution replaced this one after a write failure; not a log error.
+                return
             } catch {
                 Self.log.error("Could not open the diagnostic log", metadata: ["error": "\(LogRedact.describe(error))"])
             }

@@ -116,7 +116,7 @@ private func fitPageHeightForScreenshot(_ view: PDFView, document: PDFDocument) 
 
     let pageHeight = page.bounds(for: .mediaBox).height
     // Deferred: the view has no bounds yet while SwiftUI is still updating it.
-    DispatchQueue.main.async {
+    Task {
         guard view.bounds.height > 0 else { return }
         view.autoScales = false
         view.scaleFactor = view.bounds.height / pageHeight
@@ -129,15 +129,20 @@ struct PDFCustomView: NSViewRepresentable {
     typealias NSViewType = PDFView
 
     private let pdfDocument: PDFDocument?
+    private let url: URL?
     private let highlightDate: Date?
 
     init(_ pdfDocument: PDFDocument?, highlightDate: Date? = nil) {
         self.pdfDocument = pdfDocument
+        self.url = nil
         self.highlightDate = highlightDate
     }
 
+    /// Opens the document only in `update` when the URL changed: `init` runs on the main actor
+    /// with every re-evaluation of the parent's body, and most of those instances are discarded.
     init(_ url: URL, highlightDate: Date? = nil) {
-        self.pdfDocument = PDFDocument(url: url)
+        self.pdfDocument = nil
+        self.url = url
         self.highlightDate = highlightDate
     }
 
@@ -149,8 +154,9 @@ struct PDFCustomView: NSViewRepresentable {
     }
 
     func updateNSView(_ view: PDFView, context: Context) {
-        guard let pdfDocument,
-              view.document?.documentURL != pdfDocument.documentURL else {
+        guard let documentURL = url ?? pdfDocument?.documentURL,
+              view.document?.documentURL != documentURL,
+              let pdfDocument = pdfDocument ?? PDFDocument(url: documentURL) else {
             // Document unchanged, but highlight state may have changed
             addDateHighlightAnnotations(to: view, date: highlightDate)
             return
@@ -179,15 +185,20 @@ struct PDFCustomView: UIViewRepresentable {
     typealias UIViewType = PDFView
 
     private let pdfDocument: PDFDocument?
+    private let url: URL?
     private let highlightDate: Date?
 
     init(_ pdfDocument: PDFDocument?, highlightDate: Date? = nil) {
         self.pdfDocument = pdfDocument
+        self.url = nil
         self.highlightDate = highlightDate
     }
 
+    /// Opens the document only in `update` when the URL changed: `init` runs on the main actor
+    /// with every re-evaluation of the parent's body, and most of those instances are discarded.
     init(_ url: URL, highlightDate: Date? = nil) {
-        self.pdfDocument = PDFDocument(url: url)
+        self.pdfDocument = nil
+        self.url = url
         self.highlightDate = highlightDate
     }
 
@@ -199,8 +210,9 @@ struct PDFCustomView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: PDFView, context: Context) {
-        guard let pdfDocument,
-              view.document?.documentURL != pdfDocument.documentURL else {
+        guard let documentURL = url ?? pdfDocument?.documentURL,
+              view.document?.documentURL != documentURL,
+              let pdfDocument = pdfDocument ?? PDFDocument(url: documentURL) else {
             // Document unchanged, but highlight state may have changed
             addDateHighlightAnnotations(to: view, date: highlightDate)
             return

@@ -31,8 +31,8 @@ extension WidgetStoreDependency: DependencyKey {
                 WidgetCenter.shared.reloadAllTimelines()
             }
 
-            await SharedDefaults.set(statistics: yearCounts)
-            await SharedDefaults.set(untaggedDocumentsCount: untaggedCount)
+            SharedDefaults.set(statistics: yearCounts)
+            SharedDefaults.set(untaggedDocumentsCount: untaggedCount)
         }
     )
 }

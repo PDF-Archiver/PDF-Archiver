@@ -103,14 +103,12 @@ public actor DocumentProcessor {
     public func importScan(_ pages: [CGImage], config: ProcessingConfig) async -> URL? {
         let quality = CGFloat(config.pdfQuality.rawValue)
         do {
-            // One page that does not encode fails the import: a document with a
-            // page silently missing would look complete.
-            let imageJpegs = try pages.map { page -> Data in
-                guard let jpeg = PlatformImage.from(page).jpg(quality: quality) else { throw ProcessingError.pageEncodingFailed }
-                return jpeg
-            }
+            let imageJpegs = try await Self.encodeJpegs(pages, quality: quality)
             guard !imageJpegs.isEmpty else { throw ProcessingError.noPagesRendered }
 
+            // Persisting and enqueueing stay on the actor with no suspension in
+            // between: a `processStagedFiles` run would otherwise find the new
+            // files before they are in flight and enqueue them a second time.
             let urls = try Staging.persist(imageJpegs: imageJpegs, in: stagingFolder)
             return await enqueue(.images(urls), config: config).value
         } catch {
@@ -409,6 +407,18 @@ public actor DocumentProcessor {
 
     // MARK: - Processing core
 
+    /// Encoding a multi-page scan can take seconds; off the actor it does not hold
+    /// up intake, events and the untagged pass in the meantime.
+    @concurrent
+    private static func encodeJpegs(_ pages: [CGImage], quality: CGFloat) async throws -> [Data] {
+        // One page that does not encode fails the import: a document with a
+        // page silently missing would look complete.
+        try pages.map { page -> Data in
+            guard let jpeg = PlatformImage.from(page).jpg(quality: quality) else { throw ProcessingError.pageEncodingFailed }
+            return jpeg
+        }
+    }
+
     @concurrent
     private static func processImages(at urls: [URL], config: ProcessingConfig) async throws -> URL {
         let document = try await PDFOCREngine.createSearchablePDF(fromImagesAt: urls,
@@ -479,6 +489,13 @@ public actor DocumentProcessor {
             Logger.ocrProcessing.info("OCR cancelled", metadata: ["document": "\(LogRedact.token(url))"])
             return false
         } catch {
+            // A cancelled pass can surface as an error other than
+            // `CancellationError`; it must neither write the partially modified
+            // pdf nor stamp a document that was merely interrupted.
+            guard !Task.isCancelled else {
+                Logger.ocrProcessing.info("OCR cancelled", metadata: ["document": "\(LogRedact.token(url))"])
+                return false
+            }
             Logger.ocrProcessing.error("OCR failed", metadata: [
                 "document": "\(LogRedact.token(url))",
                 "error": "\(LogRedact.describe(error))"

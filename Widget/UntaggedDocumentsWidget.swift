@@ -11,8 +11,9 @@ import Shared
 import SwiftUI
 import WidgetKit
 
-@MainActor
-struct UntaggedDocumentsProvider: TimelineProvider {
+// `TimelineProvider` is not main-actor isolated and WidgetKit may call it from any thread: a
+// main-actor conformance would trap there, the way `WrappingHStack` did as a `Layout`.
+nonisolated struct UntaggedDocumentsProvider: TimelineProvider {
     func placeholder(in context: Context) -> UntaggedDocumentsEntry {
         UntaggedDocumentsEntry(date: Date(), untaggedDocuments: 0)
     }
@@ -36,7 +37,8 @@ struct UntaggedDocumentsProvider: TimelineProvider {
     }
 }
 
-struct UntaggedDocumentsEntry: TimelineEntry {
+// Plain data built by the nonisolated provider and read by WidgetKit off the main thread.
+nonisolated struct UntaggedDocumentsEntry: TimelineEntry {
     let date: Date
     let untaggedDocuments: Int
 }

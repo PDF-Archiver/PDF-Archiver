@@ -25,6 +25,7 @@ enum DiagnosticSignals: Log {
         #endif
         observers = lifecycleEvents.map { name, event in
             NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main) { _ in
+                // Safe: `queue: .main` delivers every notification on the main thread.
                 MainActor.assumeIsolated {
                     logLifecycleEvent(event)
                 }
