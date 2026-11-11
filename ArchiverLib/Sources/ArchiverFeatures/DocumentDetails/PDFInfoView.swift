@@ -18,7 +18,9 @@ struct PDFInfoView: View {
     @State private var pdfInfo: PDFInfo?
     @State private var showPopover = false
 
-    private static func createPdfInfo(from url: URL) -> PDFInfo {
+    /// Parses the whole PDF, so it runs off the main actor.
+    @concurrent
+    private static func createPdfInfo(from url: URL) async -> PDFInfo {
         let pdf = PDFDocument(url: url)
         let meta = pdf?.documentAttributes
 
@@ -76,9 +78,11 @@ struct PDFInfoView: View {
     }
 
     private func loadInfo() async {
-        pdfInfo = await Task.detached(priority: .userInitiated) {
-            await Self.createPdfInfo(from: documentURL)
-        }.value
+        let info = await Self.createPdfInfo(from: documentURL)
+        // `.task(id:)` cancels the load of a previous document, which may still finish after
+        // the new one; its result must not overwrite the current document's info.
+        guard !Task.isCancelled else { return }
+        pdfInfo = info
     }
 }
 

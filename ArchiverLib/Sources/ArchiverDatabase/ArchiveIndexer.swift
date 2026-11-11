@@ -61,14 +61,17 @@ public actor ArchiveIndexer {
     /// here: a provider that fails to start at launch is a transient condition, and the archive
     /// must stay visible until a live provider has reported what really exists.
     @discardableResult
-    public func setObservedRoots(_ roots: [String]) -> Int {
+    public func setObservedRoots(_ roots: [String]) async -> Int {
         observedRoots = Set(roots)
         currentGeneration += 1
         needsPrune = !observedRoots.isEmpty
+        // Captured before the write: the actor is reentrant, and a later call may bump it meanwhile.
+        let generation = currentGeneration
 
         let observedRoots = self.observedRoots
-        let storedCount = withErrorReporting {
-            try database.write { db in
+        // Async, so waiting for the writer connection does not block a cooperative thread.
+        let storedCount = await withErrorReporting {
+            try await database.write { db in
                 // Only while there is nothing to show. `reloadDocuments()` runs after every OCR
                 // pass and tears the providers down, so an indicator raised per rescan strands on
                 // the next teardown instead of clearing.
@@ -78,12 +81,12 @@ public actor ArchiveIndexer {
             }
         }
         Logger.archiveIndexer.notice("Observed roots set", metadata: [
-            "generation": "\(currentGeneration)",
+            "generation": "\(generation)",
             "rootCount": "\(observedRoots.count)",
             "storedCount": "\(storedCount.map(String.init) ?? "unknown")",
             "reconciling": "\(storedCount.map { "\($0 == 0 && !observedRoots.isEmpty)" } ?? "unknown")"
         ])
-        return currentGeneration
+        return generation
     }
 
     /// Applies one full snapshot of `root`.
@@ -127,7 +130,7 @@ public actor ArchiveIndexer {
         guard let read else {
             // Nothing more arrives for this root now, and the raised flag would leave both the
             // progress indicator and the gated text pass waiting for a snapshot that never lands.
-            clearReconciling()
+            await clearReconciling()
             return
         }
         for row in read {
@@ -190,7 +193,7 @@ public actor ArchiveIndexer {
 
         // Lowered per root, never once every root has reported: a single provider that stops
         // yielding would otherwise leave the indicator spinning for the rest of the process.
-        clearReconciling()
+        await clearReconciling()
     }
 
     /// Waits out a running reconcile, at most `timeout`; `false` means it is still running.
@@ -265,12 +268,18 @@ public actor ArchiveIndexer {
     }
 
     /// Lowers the flag - what every path that stops reconciling still owes the UI.
-    private func clearReconciling() {
-        withErrorReporting {
-            try database.write { db in
-                try Self.setReconciling(false, in: db)
+    ///
+    /// Async, so a text commit or FTS merge holding the writer connection does not block a
+    /// cooperative thread and the actor with it. In its own task because an async write throws
+    /// before it runs once the calling task is cancelled, and a cancelled reconcile still owes it.
+    private func clearReconciling() async {
+        _ = await Task { [database] in
+            await withErrorReporting {
+                try await database.write { db in
+                    try Self.setReconciling(false, in: db)
+                }
             }
-        }
+        }.value
     }
 
     /// Writes the flag only when it changes: every snapshot passes through here, and an `UPDATE`

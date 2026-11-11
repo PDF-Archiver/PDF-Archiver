@@ -27,12 +27,12 @@ final class PathManagerTests {
 
     #if os(macOS)
     @Test(.disabled("Currently not working"))
-    func archiveChangeMacOS() throws {
+    func archiveChangeMacOS() async throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
         try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil)
 //        try PathManager.shared.setArchiveUrl(with: .local(currentArchiveFolder))
 
-        let archiveUrl = try PathManager.shared.getArchiveUrl()
+        let archiveUrl = try await PathManager.shared.getArchiveUrl()
 
         // folders that should be copied
         try FileManager.default.createDirectory(at: archiveUrl.appendingPathComponent("untagged"), withIntermediateDirectories: true, attributes: nil)
@@ -48,7 +48,7 @@ final class PathManagerTests {
         let newArchiveUrl = try type.getArchiveUrl()
         try FileManager.default.createFolderIfNotExists(newArchiveUrl)
 
-        try PathManager.shared.setArchiveUrl(with: type)
+        try await PathManager.shared.setArchiveUrl(with: type)
 
         let urls = try FileManager.default.contentsOfDirectory(at: newArchiveUrl, includingPropertiesForKeys: nil, options: [])
         #expect(urls.contains(where: { $0.lastPathComponent == "untagged" }))
@@ -63,14 +63,14 @@ final class PathManagerTests {
 
     #if !os(macOS)
     @Test
-    func pdfInput() throws {
+    func pdfInput() async throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
         try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil)
 
         // Set initial archive path
-        try PathManager.shared.setArchiveUrl(with: .local(currentArchiveFolder))
+        try await PathManager.shared.setArchiveUrl(with: .local(currentArchiveFolder))
 
-        let archiveUrl = try PathManager.shared.getArchiveUrl()
+        let archiveUrl = try await PathManager.shared.getArchiveUrl()
 
         // folders that should be copied
         try FileManager.default.createDirectory(at: archiveUrl.appendingPathComponent("untagged"), withIntermediateDirectories: true, attributes: nil)
@@ -87,7 +87,7 @@ final class PathManagerTests {
 
         try FileManager.default.createFolderIfNotExists(newArchiveUrl)
 
-        try PathManager.shared.setArchiveUrl(with: type)
+        try await PathManager.shared.setArchiveUrl(with: type)
 
         let urls = try FileManager.default.contentsOfDirectory(at: newArchiveUrl, includingPropertiesForKeys: nil, options: [])
         print(urls)

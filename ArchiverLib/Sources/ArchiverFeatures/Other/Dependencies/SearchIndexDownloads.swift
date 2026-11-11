@@ -44,6 +44,9 @@ enum SearchIndexDownloads {
 
         // The iCloud daemon finishes these in its own time; the next run indexes them.
         for document in documents {
+            // `startDownloadOf` has no cancellation check, so an expired background task would
+            // otherwise keep requesting the rest of the batch.
+            guard !Task.isCancelled else { break }
             do {
                 try await archiveStore.startDownloadOf(document.url)
             } catch {

@@ -326,12 +326,15 @@ struct AppFeature {
                 return .merge(
                     premiumEffect,
                     .run { _ in
-                        await withThrowingTaskGroup(of: Void.self) { group in
+                        await withTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
                                 await documentProcessor.processStagedFiles()
                             }
                             group.addTask(priority: .medium) {
-                                try await archiveStore.reloadDocuments()
+                                // Reported here: nothing awaits the children, so a thrown error would vanish.
+                                await withErrorReporting {
+                                    try await archiveStore.reloadDocuments()
+                                }
                             }
                         }
                     }

@@ -33,7 +33,7 @@ final class ShareViewController: UIViewController, Log {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var checkmark: UIImageView!
 
-    private var minTimeDeadline: DispatchTime?
+    private var minTimeDeadline: ContinuousClock.Instant?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +47,7 @@ final class ShareViewController: UIViewController, Log {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        minTimeDeadline = .now() + .milliseconds(750)
+        minTimeDeadline = .now + .milliseconds(750)
         Task(priority: .userInitiated) {
             await self.handleAttachments()
         }
@@ -55,20 +55,19 @@ final class ShareViewController: UIViewController, Log {
 
     // MARK: - Helper Functions
 
-    private func complete(with error: (any Error)? = nil) {
-        DispatchQueue.main.asyncAfter(deadline: minTimeDeadline ?? .now()) { [weak self] in
+    private func complete(with error: (any Error)? = nil) async {
+        // `try?`: the request has to complete even if the sleep ends early.
+        try? await Task.sleep(until: minTimeDeadline ?? .now, clock: .continuous)
 
-            if error != nil {
-                self?.checkmark.image = UIImage(systemName: "xmark.circle.fill")
-            }
-
-            self?.activityIndicator.isHidden = true
-            self?.checkmark.isHidden = false
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(600)) {
-                self?.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-            }
+        if error != nil {
+            checkmark.image = UIImage(systemName: "xmark.circle.fill")
         }
+
+        activityIndicator.isHidden = true
+        checkmark.isHidden = false
+
+        try? await Task.sleep(for: .milliseconds(600))
+        extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
     }
 
     private func handleAttachments() async {
@@ -98,13 +97,16 @@ final class ShareViewController: UIViewController, Log {
                 error = ShareError.invalidData
             }
 
-            complete(with: error)
+            await complete(with: error)
         } catch {
-            complete(with: error)
+            await complete(with: error)
         }
     }
 }
 
+// Unchecked: Foundation does not mark `NSItemProvider` `Sendable`, though its loading API is
+// asynchronous and callable from any thread. This extension only loads from the providers the host
+// app handed over and never registers items on them. Remove once Foundation declares the conformance.
 extension NSItemProvider: @unchecked @retroactive Sendable {}
 
 extension ShareViewController.ShareError: LogSafeError {

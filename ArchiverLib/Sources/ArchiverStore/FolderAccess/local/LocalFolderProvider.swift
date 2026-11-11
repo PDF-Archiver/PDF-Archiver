@@ -40,13 +40,13 @@ final class LocalFolderProvider: FolderProvider {
             guard let self else { return }
 
             // build initial changes
-            let documents = createDocuments()
+            let documents = await Self.createDocuments(at: baseUrl, with: fileProperties)
             currentDocumentsStreamContinuation.yield(documents)
 
             // listen to changes in folder
             // we debounce this because the `DirectoryDeepWatcher` currently triggers too often
             for await _ in watcher.changedUrlStream.debounce(for: .milliseconds(500)) {
-                let documents = createDocuments()
+                let documents = await Self.createDocuments(at: baseUrl, with: fileProperties)
                 currentDocumentsStreamContinuation.yield(documents)
             }
         }
@@ -86,8 +86,11 @@ final class LocalFolderProvider: FolderProvider {
 
     // MARK: - Helper Functions
 
-    private func createDocuments() -> [DocumentInformation] {
-        return fileManager.getFilesRecursive(at: baseUrl, with: fileProperties)
+    /// Off `FolderProviderActor`: the walk reads every file's resource values, and every other
+    /// provider's save, rename and stop would queue behind it for the whole archive.
+    @concurrent
+    nonisolated private static func createDocuments(at baseUrl: URL, with fileProperties: [URLResourceKey]) async -> [DocumentInformation] {
+        return FileManager.default.getFilesRecursive(at: baseUrl, with: fileProperties)
             .filter { $0.pathExtension.lowercased() == "pdf" }
             .compactMap { url -> DocumentInformation? in
 
@@ -119,7 +122,7 @@ final class LocalFolderProvider: FolderProvider {
             .sorted { $0.url.path < $1.url.path }
     }
 
-    private func getDownloadStatus(from values: URLResourceValues) -> Double {
+    nonisolated private static func getDownloadStatus(from values: URLResourceValues) -> Double {
         let downloadStatus: Double
         if values.ubiquitousItemIsDownloading ?? false {
             downloadStatus = 0.123

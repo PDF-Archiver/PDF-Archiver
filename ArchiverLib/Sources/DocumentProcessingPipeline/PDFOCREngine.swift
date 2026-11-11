@@ -23,11 +23,6 @@ private typealias Color = NSColor
 private typealias DrawingOptions = NSString.DrawingOptions
 #endif
 
-// Pre-computed text entries cross an `await` boundary before rendering, so the
-// NSAttributedString values need a Sendable conformance. NSAttributedString is
-// immutable; declared once in this target.
-extension NSAttributedString: @unchecked @retroactive Sendable {}
-
 /// Vision OCR plus PDF page rendering with an invisible text layer.
 ///
 /// One shared core (`recognizeText` + `renderPage`) drives both entry points:
@@ -37,9 +32,11 @@ extension NSAttributedString: @unchecked @retroactive Sendable {}
 ///   pages of an existing PDF are replaced by pages that additionally carry
 ///   the recognized text.
 ///
-/// Attributed strings are always pre-computed on the main actor *before* the
-/// PDF context is created because `NSGraphicsContext.current` is thread-local
-/// and would be corrupted across an `await` suspension point.
+/// Attributed strings are always pre-computed *before* the PDF context is
+/// created, and `renderPage` contains no `await`: `NSGraphicsContext.current`
+/// is thread-local and would be corrupted across a suspension point. Measuring
+/// and drawing the strings needs no main actor - `renderPage` already draws
+/// them on the caller's executor.
 enum PDFOCREngine {
 
     private static let confidenceThreshold = Float(0)
@@ -55,7 +52,6 @@ enum PDFOCREngine {
         let rect: CGRect
         let text: String
 
-        @MainActor
         func getAttributedText() -> NSAttributedString {
             NSAttributedString.createCleared(from: text, with: rect.size)
         }
@@ -84,7 +80,7 @@ enum PDFOCREngine {
                 throw ScanError.unreadablePageImage
             }
             let results = try await recognizeText(in: cgImage, imageSize: image.size)
-            let textEntries = await makeTextEntries(from: results)
+            let textEntries = makeTextEntries(from: results)
             let bounds = CGRect(origin: .zero, size: image.size)
 
             guard let page = renderPage(image: image, bounds: bounds, texts: textEntries) else {
@@ -156,7 +152,7 @@ enum PDFOCREngine {
                                  height: result.rect.height * scaleY),
                     text: result.text)
             }
-            let textEntries = await makeTextEntries(from: scaledResults)
+            let textEntries = makeTextEntries(from: scaledResults)
 
             // Always drawn into the original media box, keeping the page size.
             guard let newPage = renderPage(image: drawImage, bounds: bounds, texts: textEntries) else { continue }
@@ -235,12 +231,11 @@ enum PDFOCREngine {
         }
     }
 
-    /// Pre-compute the invisible attributed strings on the main actor, before
-    /// any PDF context exists.
-    private static func makeTextEntries(from results: [TextObservationResult]) async -> [(rect: CGRect, text: NSAttributedString)] {
+    /// Pre-compute the invisible attributed strings before any PDF context exists.
+    private static func makeTextEntries(from results: [TextObservationResult]) -> [(rect: CGRect, text: NSAttributedString)] {
         var entries: [(rect: CGRect, text: NSAttributedString)] = []
         for result in results {
-            let attributed = await result.getAttributedText()
+            let attributed = result.getAttributedText()
 
             // Skip empty observations - they would produce a NaN font expansion.
             guard !result.text.isEmpty else { continue }

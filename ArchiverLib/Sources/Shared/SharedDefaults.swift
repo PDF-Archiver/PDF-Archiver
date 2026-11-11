@@ -7,10 +7,14 @@
 
 import Foundation
 
-@MainActor
+/// Not main-actor isolated: the widget's timeline providers read it from any thread, and
+/// `UserDefaults` is thread-safe.
 public enum SharedDefaults {
-    // swiftlint:disable:next force_unwrapping
-    private static let sharedDefaults = UserDefaults(suiteName: "group.PDFArchiverShared")!
+    // Computed, because a stored `UserDefaults` is not `Sendable`; instances of one suite share their storage.
+    private static var sharedDefaults: UserDefaults {
+        // swiftlint:disable:next force_unwrapping
+        UserDefaults(suiteName: "group.PDFArchiverShared")!
+    }
 
     public static func set(untaggedDocumentsCount count: Int) {
         sharedDefaults.set(count, forKey: "untaggedDocumentsCount")
