@@ -11,6 +11,9 @@ import Logging
 import Shared
 import SwiftUI
 import TipKit
+#if !os(macOS)
+import VisionKit
+#endif
 
 struct ScanButtonModifier: ViewModifier {
     let showButton: Bool
@@ -67,36 +70,50 @@ struct ScanButtonModifier: ViewModifier {
                 .matchedTransitionSource(id: "scanButton", in: scanButtonNamespace)
             }
             .sheet(isPresented: $isScanPresented) {
-                DocumentCameraView(
-                    isShown: $isScanPresented,
-                    imageHandler: { images in
-                        Task {
-                            await feedbackGenerator.notify(.success)
+                // The simulator and devices without a camera cannot scan, and creating the scanner there throws.
+                if VNDocumentCameraViewController.isSupported {
+                    DocumentCameraView(
+                        isShown: $isScanPresented,
+                        imageHandler: { images in
+                            Task {
+                                await feedbackGenerator.notify(.success)
 
-                            // Handle images and get the processed document URL
-                            let processedDocumentUrl = await documentProcessor.handleImages(images)
+                                // Handle images and get the processed document URL
+                                let processedDocumentUrl = await documentProcessor.handleImages(images)
 
-                            // Share the scanned document when it was requested
-                            if let url = processedDocumentUrl {
-                                await MainActor.run {
-                                    if shouldShareAfterScan {
-                                        documentToShare = url
-                                        isShareSheetPresented = true
+                                // Share the scanned document when it was requested
+                                if let url = processedDocumentUrl {
+                                    await MainActor.run {
+                                        if shouldShareAfterScan {
+                                            documentToShare = url
+                                            isShareSheetPresented = true
+                                            shouldShareAfterScan = false
+                                        }
+                                    }
+                                } else {
+                                    await MainActor.run {
                                         shouldShareAfterScan = false
                                     }
                                 }
-                            } else {
-                                await MainActor.run {
-                                    shouldShareAfterScan = false
-                                }
-                            }
 
-                            await AfterFirstImportTip.documentImported.donate()
+                                await AfterFirstImportTip.documentImported.donate()
+                            }
+                        })
+                        .edgesIgnoringSafeArea(.all)
+                        .statusBar(hidden: true)
+                        .navigationTransition(.zoom(sourceID: "scanButton", in: scanButtonNamespace))
+                } else {
+                    ContentUnavailableView {
+                        Label(String(localized: "Scanner Unavailable", bundle: #bundle), systemImage: "doc.viewfinder")
+                    } description: {
+                        Text("This device can't scan documents with the camera.", bundle: #bundle)
+                    } actions: {
+                        Button(String(localized: "Close", bundle: #bundle)) {
+                            isScanPresented = false
                         }
-                    })
-                    .edgesIgnoringSafeArea(.all)
-                    .statusBar(hidden: true)
+                    }
                     .navigationTransition(.zoom(sourceID: "scanButton", in: scanButtonNamespace))
+                }
             }
             .sheet(isPresented: $isShareSheetPresented) {
                 if let url = documentToShare {

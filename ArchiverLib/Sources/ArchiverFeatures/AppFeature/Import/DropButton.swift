@@ -180,7 +180,8 @@ struct DropButton: View {
         .animation(.snappy, value: state)
     }
 
-    // A quick tap fails the long press, so only then does the tap get its turn.
+    // The tap runs alongside the hold: a quick tap still starts the long press,
+    // which then blocks the Button's action and any tap waiting behind it.
     private var scanGesture: some Gesture {
         LongPressGesture(minimumDuration: 0.15)
             // `.global`: the gesture sits inside the `offset` it drives, so a local
@@ -200,12 +201,16 @@ struct DropButton: View {
                     isOverShareTarget = false
                 }
             }
+            .simultaneously(with: TapGesture())
             .onEnded { value in
                 defer { isOverShareTarget = false }
-                guard case .second(true, let drag) = value else { return }
-                release(ScanButtonRelease(translation: drag?.translation ?? .zero, isOverShareTarget: isOverShareTarget))
+                // A hold also ends the tap, so it decides alone and never scans twice.
+                if case .second(true, let drag) = value.first {
+                    release(ScanButtonRelease(translation: drag?.translation ?? .zero, isOverShareTarget: isOverShareTarget))
+                } else if value.second != nil {
+                    release(.scan)
+                }
             }
-            .exclusively(before: TapGesture().onEnded { release(.scan) })
     }
 
     private func release(_ outcome: ScanButtonRelease) {
