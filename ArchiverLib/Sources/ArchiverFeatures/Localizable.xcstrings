@@ -419,6 +419,17 @@
         }
       }
     },
+    "Close" : {
+      "comment" : "Closes the sheet shown instead of the document scanner.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        }
+      }
+    },
     "Congratulations! All documents are tagged. 🎉" : {
       "localizations" : {
         "de" : {
@@ -1505,6 +1516,17 @@
     "Scan it. Tag it. Find it." : {
       "shouldTranslate" : false
     },
+    "Scanner Unavailable" : {
+      "comment" : "Title of the sheet shown instead of the document scanner on devices that cannot scan.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanner nicht verfügbar"
+          }
+        }
+      }
+    },
     "Search Index" : {
       "localizations" : {
         "de" : {
@@ -2017,6 +2039,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die Textebene dieses Dokuments konnte nicht erstellt werden. Bitte versuche es erneut."
+          }
+        }
+      }
+    },
+    "This device can't scan documents with the camera." : {
+      "comment" : "Description of the sheet shown instead of the document scanner on devices that cannot scan.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Gerät kann keine Dokumente mit der Kamera scannen."
           }
         }
       }
