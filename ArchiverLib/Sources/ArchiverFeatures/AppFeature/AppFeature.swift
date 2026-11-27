@@ -14,6 +14,9 @@ import Shared
 import SQLiteData
 import SwiftUI
 import TipKit
+#if os(iOS)
+import UIKit
+#endif
 
 @Reducer
 struct AppFeature {
@@ -440,9 +443,15 @@ struct AppView: View {
     var body: some View {
         TabView(selection: $store.selectedTab) {
             #if os(iOS)
-            Tab(value: AppFeature.State.Tab.search, role: .search) {
-                archiveList(in: .search)
-                    .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                Tab(value: AppFeature.State.Tab.search, role: .search) {
+                    iOSArchiveTabContent
+                }
+            } else {
+                // The search role keeps the sidebar focused on iPadOS with a minimized keyboard, so text fields can't be tapped.
+                Tab(String(localized: "Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
+                    iOSArchiveTabContent
+                }
             }
             #else
             if #available(macOS 26, *) {
@@ -534,6 +543,13 @@ struct AppView: View {
             }
         }
     }
+
+    #if os(iOS)
+    private var iOSArchiveTabContent: some View {
+        archiveList(in: .search)
+            .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
+    }
+    #endif
 
     /// iPadOS lays out the hidden Tags and Years tabs when the keyboard first appears. A form there
     /// shares the store's focus binding and clears the focus of the tapped text field.
